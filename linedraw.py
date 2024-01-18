@@ -199,19 +199,19 @@ def sketch(path):
         disp.show()
 
     f = open(export_path,'w')
-    f.write(makesvg(lines))
+    f.write(makesvg(lines, (w,h)))
     f.close()
     print(len(lines),"strokes.")
     print("done.")
     return lines
 
 
-def makesvg(lines):
+def makesvg(lines, size, color = "black"):
     print("generating svg file...")
-    out = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1">'
+    out = '<svg width="%d" height="%d" xmlns="http://www.w3.org/2000/svg" version="1.1">\n' % ( size)
     for l in lines:
-        l = ",".join([str(p[0]*0.5)+","+str(p[1]*0.5) for p in l])
-        out += '<polyline points="'+l+'" stroke="black" stroke-width="2" fill="none" />\n'
+        l = ",".join([str(p[0])+","+str(p[1]) for p in l])
+        out += '<polyline points="'+l+'" stroke="%s" stroke-width="0.45mm" fill="none" />\n' % (color, )
     out += '</svg>'
     return out
 
