@@ -164,7 +164,7 @@ def hatch(IM,sc=16):
 
     for i in range(0,len(lines)):
         for j in range(0,len(lines[i])):
-            lines[i][j] = int(lines[i][j][0]+sc*perlin.noise(i*0.5,j*0.1,1)),int(lines[i][j][1]+sc*perlin.noise(i*0.5,j*0.1,2))-j
+            lines[i][j] = int(lines[i][j][0]+sc*perlin.noise(i*0.5,j*0.1,1)),int(lines[i][j][1]+sc*perlin.noise(i*0.5,j*0.1,2)) #-j
     return lines
 
 
