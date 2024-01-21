@@ -18,6 +18,8 @@ show_bitmap = False
 resolution = 1024
 hatch_size = 16
 contour_simplify = 1
+pen_color="#000000"
+pen_width="0.45mm"
 
 try:
     import numpy as np
@@ -200,19 +202,19 @@ def sketch(path):
         disp.show()
 
     f = open(export_path,'w')
-    f.write(makesvg(lines, (int(resolution),int((resolution*h)/w))))
+    f.write(makesvg(lines, (int(resolution),int((resolution*h)/w))),pen_color, pen_width)
     f.close()
     print(len(lines),"strokes.")
     print("done.")
     return lines
 
 
-def makesvg(lines, size, color = "black"):
+def makesvg(lines, size, color = "black", penwidth="0.45mm"):
     print("generating svg file...")
     out = '<svg width="%d" height="%d" xmlns="http://www.w3.org/2000/svg" version="1.1">\n' % ( size)
     for l in lines:
         l = ",".join([str(p[0])+","+str(p[1]) for p in l])
-        out += '<polyline points="'+l+'" stroke="%s" stroke-width="0.45mm" fill="none" />\n' % (color, )
+        out += '<polyline points="'+l+'" stroke="%s" stroke-width="%s" fill="none" />\n' % (color, penwidth)
     out += '</svg>'
     return out
 
@@ -251,6 +253,13 @@ if __name__ == "__main__":
     parser.add_argument('--contour_simplify',dest='contour_simplify',
         default=contour_simplify,action='store',nargs='?',type=int,
         help='Level of contour simplification. eg. 1, 2, 3')
+    
+    parser.add_argument('--color',dest='pen_color',
+        default=pen_color,action='store',nargs='?',type=str,
+        help='Pen color, eg #000000')
+    parser.add_argument('--thick',dest='pen_width',
+        default=pen_width,action='store',nargs='?',type=str,
+        help='Pen width, eg 0.45mm')
 
     args = parser.parse_args()
     
@@ -261,4 +270,6 @@ if __name__ == "__main__":
     contour_simplify = args.contour_simplify
     show_bitmap = args.show_bitmap
     no_cv = args.no_cv
+    pen_color = args.pen_color
+    pen_width = args.pen_width
     sketch(args.input_path)
