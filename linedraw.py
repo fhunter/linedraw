@@ -17,7 +17,7 @@ draw_hatch = True
 show_bitmap = False
 resolution = 1024
 hatch_size = 16
-contour_simplify = 2
+contour_simplify = 1
 
 try:
     import numpy as np
@@ -200,7 +200,7 @@ def sketch(path):
         disp.show()
 
     f = open(export_path,'w')
-    f.write(makesvg(lines, (w,h)))
+    f.write(makesvg(lines, (int(resolution),int((resolution*h)/w))))
     f.close()
     print(len(lines),"strokes.")
     print("done.")
