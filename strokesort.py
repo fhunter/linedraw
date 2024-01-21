@@ -6,6 +6,8 @@ from util import *
 def sortlines(lines):
     print("optimizing stroke sequence...")
     clines = lines[:]
+    if not clines: # protection from empty list
+        return lines
     slines = [clines.pop(0)]
     while clines != []:
         x,s,r = None,1000000,False
