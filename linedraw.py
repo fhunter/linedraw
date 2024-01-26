@@ -9,6 +9,7 @@ from filters import *
 from strokesort import *
 import perlin
 from util import *
+from tqdm import tqdm
 
 no_cv = False
 export_path = "output/out.svg"
@@ -63,7 +64,7 @@ def getdots(IM):
 def connectdots(dots):
     print("connecting contour points...")
     contours = []
-    for y in range(len(dots)):
+    for y in tqdm(range(len(dots))):
         for x,v in dots[y]:
             if v > -1:
                 if y == 0:
@@ -107,7 +108,7 @@ def getcontours(IM,sc=2):
         contours2[i] = [(c[1],c[0]) for c in contours2[i]]    
     contours = contours1+contours2
 
-    for i in range(len(contours)):
+    for i in tqdm(range(len(contours))):
         for j in range(len(contours)):
             if len(contours[i]) > 0 and len(contours[j])>0:
                 if distsum(contours[j][0],contours[i][-1]) < 8:
@@ -155,8 +156,8 @@ def hatch(IM,sc=16):
                 lg2.append([(x+sc,y),(x,y+sc)])
 
     lines = [lg1,lg2]
-    for k in range(0,len(lines)):
-        for i in range(0,len(lines[k])):
+    for k in tqdm(range(0,len(lines))):
+        for i in tqdm(range(0,len(lines[k]))):
             for j in range(0,len(lines[k])):
                 if lines[k][i] != [] and lines[k][j] != []:
                     if lines[k][i][-1] == lines[k][j][0]:
@@ -202,19 +203,23 @@ def sketch(path):
         disp.show()
 
     f = open(export_path,'w')
-    f.write(makesvg(lines, (int(resolution),int((resolution*h)/w))),pen_color, pen_width)
+    f.write(makesvg(lines, (int(resolution),int((resolution*h)/w)),pen_color, pen_width))
     f.close()
     print(len(lines),"strokes.")
     print("done.")
     return lines
 
 
-def makesvg(lines, size, color = "black", penwidth="0.45mm"):
+def makesvg(lines, size, color = "black", penwidth="0.45mm", transparent=False):
     print("generating svg file...")
+    if transparent:
+        opacity = 0.5
+    else:
+        opacity = 1.0
     out = '<svg width="%d" height="%d" xmlns="http://www.w3.org/2000/svg" version="1.1">\n' % ( size)
     for l in lines:
         l = ",".join([str(p[0])+","+str(p[1]) for p in l])
-        out += '<polyline points="'+l+'" stroke="%s" stroke-width="%s" fill="none" />\n' % (color, penwidth)
+        out += '<polyline points="'+l+'" stroke="%s" stroke-width="%s" style="mix-blend-mode:darken;opacity=%f" fill="none" />\n' % (color, penwidth, opacity)
     out += '</svg>'
     return out
 
