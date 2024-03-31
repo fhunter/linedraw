@@ -11,6 +11,7 @@ import perlin
 from util import *
 from tqdm import tqdm
 
+optimize = False
 no_cv = False
 export_path = "output/out.svg"
 draw_contours = True
@@ -194,7 +195,8 @@ def sketch(path):
     if draw_hatch:
         lines += hatch(IM.resize((resolution//hatch_size,resolution//hatch_size*h//w)),hatch_size)
 
-    lines = sortlines(lines)
+    if optimize:
+        lines = sortlines(lines)
     if show_bitmap:
         disp = Image.new("RGB",(resolution,resolution*h//w),(255,255,255))
         draw = ImageDraw.Draw(disp)
@@ -246,6 +248,10 @@ if __name__ == "__main__":
     parser.add_argument('-nh','--no_hatch',dest='no_hatch',
         const = draw_hatch,default= not draw_hatch,action='store_const',
         help='Disable hatching.')
+    
+    parser.add_argument('-s','--optimize' ,dest='optimize',
+        const = not optimize,default= optimize,action='store_const',
+        help="Enable path optimization.")
 
     parser.add_argument('--no_cv',dest='no_cv',
         const = not no_cv,default= no_cv,action='store_const',
@@ -271,6 +277,7 @@ if __name__ == "__main__":
     export_path = args.output_path
     draw_hatch = not args.no_hatch
     draw_contours = not args.no_contour
+    optimize = args.optimize
     hatch_size = args.hatch_size
     contour_simplify = args.contour_simplify
     show_bitmap = args.show_bitmap
